@@ -1,0 +1,11 @@
+python-dotenv
+click
+pandas
+openpyxl
+pydantic
+flake8
+black
+isort
+mypy
+vulture
+pytest
