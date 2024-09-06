@@ -1,33 +1,34 @@
+import json
 from typing import Any
 
 
 def make_title_list(title_list: list[str]) -> list[str]:
-    """ Cоздание названия для заголовка """
+    """Cоздание названия для заголовка"""
 
-    return list(title.lower().strip().replace(' ', '_') for title in title_list if title)
+    return list(title.lower().strip().replace(" ", "_") for title in title_list if title)
 
 
 def process_activity_time(activity_time: str) -> list[list[int]]:
-    """ Преобразование поля 'activity_time' """
+    """Преобразование поля 'activity_time'"""
 
-    numbers = list(map(int, activity_time.strip().split(',')))
-    return list(numbers[i:i + 2] for i in range(0, len(numbers), 2))
+    numbers = list(map(int, activity_time.strip().split(",")))
+    return list(numbers[i : i + 2] for i in range(0, len(numbers), 2))
 
 
 def convert_element(element: str):
-    """ Конвертация элемента тела """
+    """Конвертация элемента тела"""
 
     if element.isdigit():
         return int(element)
 
     strip_element = element.strip()
 
-    if strip_element in ['true', 'false']:
+    if strip_element in ["true", "false"]:
         return bool(strip_element)
 
-    split_element = element.split(',')
+    split_element = element.split(",")
 
-    if element == '0,1,2,3,4,5,6':
+    if element == "0,1,2,3,4,5,6":
         return list(int(e) for e in split_element)
 
     if len(split_element) == 4 and all(part.strip().isdigit for part in split_element):
@@ -37,7 +38,7 @@ def convert_element(element: str):
 
 
 def check_on_empty_of_last_field(data: list[Any]) -> list[Any]:
-    """ Проверка последнего элемента тела на пустату """
+    """Проверка последнего элемента тела на пустоту"""
 
     if not isinstance(data[-1], bool):
         data.append(False)
@@ -46,13 +47,13 @@ def check_on_empty_of_last_field(data: list[Any]) -> list[Any]:
 
 
 def make_body(data: list[list[str]]) -> list[Any]:
-    """ Создание тела данных """
+    """Создание тела данных"""
 
     return list(list(convert_element(list_data) for list_data in sublist if list_data) for sublist in data)
 
 
 def convert_clients_data(body: list[list[Any]], headers: list[str]) -> list[dict]:
-    """ Конвертация данных клиента """
+    """Конвертация данных клиента"""
 
     clients_data = []
 
@@ -76,3 +77,26 @@ def convert_clients_data(body: list[list[Any]], headers: list[str]) -> list[dict
         clients_data.append(merged_dict)
 
     return clients_data
+
+
+def open_json_file(path):
+    """Фyнкция для открытия файла"""
+    try:
+        with open(path, "r") as file:
+            return json.load(file)
+
+    except FileNotFoundError:
+        return []
+
+
+def write_json_file(path, data: list[dict]):
+    try:
+        with open(path, "w", encoding="utf-8") as file:
+            json.dump(data, file, indent=4, ensure_ascii=False)
+
+    except FileNotFoundError:
+        raise FileNotFoundError("Файл по заданному пути не найден")
+
+
+def convert_data_to_json(data: list[dict]) -> str:
+    return json.dumps(data, indent=4, ensure_ascii=False)
