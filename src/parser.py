@@ -1,4 +1,4 @@
-from src.services import make_title_list, make_body, convert_clients_data
+from src.services import convert_clients_data, make_body, make_title_list
 
 
 class Parser:

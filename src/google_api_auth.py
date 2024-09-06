@@ -5,6 +5,7 @@ from google.oauth2.service_account import Credentials
 from googleapiclient.discovery import build
 
 from src import settings
+from src.settings import CREDENTIALS_PATH
 
 
 class GoogleAPIAuth:
@@ -26,7 +27,7 @@ class GoogleAPIAuth:
         Получение учётных данных из JSON-файла для сервисного аккаунта
         """
         try:
-            return service_account.Credentials.from_service_account_file("../credentials.json", scopes=self._scopes)
+            return service_account.Credentials.from_service_account_file(CREDENTIALS_PATH, scopes=self._scopes)
 
         except Exception as e:
             raise ValueError(f"Ошибка при получении учётных данных: {e}")
