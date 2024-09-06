@@ -1,6 +1,4 @@
-from typing import Any
-
-from src.services import make_title_list
+from src.services import make_title_list, make_body, convert_clients_data
 
 
 class Parser:
@@ -8,17 +6,12 @@ class Parser:
     Класс для парсинга полученных данных из таблицы Google Sheet
     """
 
-    def __init__(self, data: list[list[Any]]) -> None:
-        self._data = data
+    def __init__(self, data: list[list[str]]) -> None:
+        self._header = make_title_list(data[0])
+        self._body = make_body(data[1:])
 
-        self.headers = self._make_headers()
-        self.body = data[1:]
-
-    def _make_headers(self) -> list[str]:
-        return make_title_list(self._data[0])
-
-    def convert_data_to_dict(self) -> list[dict]:
-        return list(dict(zip(self.headers, values)) for values in self.body)
-
-
-
+    def convert_clients_data(self) -> list[dict]:
+        """
+        Метод для конвертации данных клиента
+        """
+        return convert_clients_data(self._body, self._header)
