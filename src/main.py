@@ -9,7 +9,7 @@ def main():
 
     parser = Parser(data)
 
-    print(parser.convert_data_to_dict())
+    print(parser.convert_clients_data())
 
 
 if __name__ == '__main__':
