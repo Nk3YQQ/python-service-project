@@ -6,6 +6,9 @@ pydantic
 flake8
 black
 isort
-mypy
 vulture
 pytest
+google-api-python-client
+google-auth
+google-auth-oauthlib
+google-auth-httplib2
