@@ -49,7 +49,7 @@ def check_on_empty_of_last_field(data: list[Any]) -> list[Any]:
 def make_body(data: list[list[str]]) -> list[Any]:
     """Создание тела данных"""
 
-    return list(list(convert_element(list_data) for list_data in sublist if list_data) for sublist in data)
+    return list(list(convert_element(list_data) for list_data in sublist) for sublist in data)
 
 
 def convert_clients_data(body: list[list[Any]], headers: list[str]) -> list[dict]:
@@ -58,19 +58,19 @@ def convert_clients_data(body: list[list[Any]], headers: list[str]) -> list[dict
     clients_data = []
 
     for data in body:
+        del data[22]
+
         checked_data = check_on_empty_of_last_field(data)
 
         first_element = data[0]
 
-        if not isinstance(first_element, int):
+        if first_element != "":
             client_data = {headers[0]: first_element}
-
-            other_data = dict(zip(headers[1:], checked_data[1:]))
 
         else:
             client_data = {headers[0]: clients_data[-1][headers[0]]}
 
-            other_data = dict(zip(headers[1:], checked_data))
+        other_data = dict(zip(headers[1:], checked_data[1:]))
 
         merged_dict = client_data | other_data
 
@@ -80,7 +80,7 @@ def convert_clients_data(body: list[list[Any]], headers: list[str]) -> list[dict
 
 
 def open_json_file(path):
-    """Фyнкция для открытия файла"""
+    """Открытие файла в формате json"""
     try:
         with open(path, "r") as file:
             return json.load(file)
@@ -89,7 +89,8 @@ def open_json_file(path):
         return []
 
 
-def write_json_file(path, data: list[dict]):
+def write_json_file(path, data: list[dict] | dict):
+    """Запись данных в json-фйал"""
     try:
         with open(path, "w", encoding="utf-8") as file:
             json.dump(data, file, indent=4, ensure_ascii=False)
@@ -99,4 +100,16 @@ def write_json_file(path, data: list[dict]):
 
 
 def convert_data_to_json(data: list[dict]) -> str:
+    """Конвертация данных в json"""
+
     return json.dumps(data, indent=4, ensure_ascii=False)
+
+
+def clear_data(path):
+    """Заменяет исходные данные json-файла на {}"""
+    try:
+        with open(path, "w", encoding="utf-8") as file:
+            file.write("{}")
+
+    except FileNotFoundError:
+        raise FileNotFoundError("Файл по заданному пути не найден")
